@@ -37,6 +37,7 @@ CREATE TABLE posts(
    post_title VARCHAR(255) NOT NULL,
    post_body VARCHAR(5000) NOT NULL,
    post_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   post_author VARCHAR(255) NOT NULL,
    post_author_id uuid,
    FOREIGN KEY(post_author_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
@@ -46,3 +47,28 @@ CREATE TABLE posts(
 
 INSERT INTO posts (post_title, post_body, post_author_id) 
 VALUES ('first', 'This is my first post', '4a231d22-9b28-46c8-a843-125b6354e995');
+
+
+
+
+-- this is a trigger table for the users
+
+CREATE TABLE notifications (
+   triger_id SERIAL PRIMARY KEY,
+   username VARCHAR(255) NOT NULL,
+   user_email VARCHAR(255) NOT NULL,
+   created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   messages VARCHAR(200)
+);
+
+
+-- dummy trigger insertion
+DELIMITER $$
+CREATE
+   TRIGGER notify BEFORE INSERT
+   ON users
+   FOR EACH ROW BEGIN
+      INSERT INTO notifications (user, messages) 
+      VALUES(NEW.user_name, NEW.user_email ,"added a new user" );
+   END$$
+DELIMITER ;
